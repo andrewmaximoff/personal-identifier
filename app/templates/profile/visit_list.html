@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Visit list | Identifier{% endblock %}
+
+{% block css_link  %}
+{% endblock %}
+
+{% block content %}
+  {% include 'header.html' %}
+  <div class="container">
+    <div class="justify-content-center">
+      <h1 class="">Visit list</h1>
+      <div class="row">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Full name</th>
+              <th scope="col">Visiting time</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for visit in visits %}
+              <tr>
+                <td>{{ visit.user.full_name }}</td>
+                <td>{{ moment(visit.visit_date).format('MMMM Do, h:mm:ss a') }}</td>
+                <td>
+                  <a class="btn btn-primary" href="{{ url_for('profile.visit_profile', visit_id=visit.id) }}">View</a>
+                </td>
+              </tr>
+            {% else %}
+              <td colspan="3">None</td>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="row justify-content-between">
+        <div class="col-4">
+          {% if prev_url %}
+            <a class="btn btn-outline-primary" href="{{ prev_url }}">Prev</a>
+          {% endif %}
+        </div>
+        <div class="col-4 text-right">
+          {% if next_url %}
+            <a class="btn btn-outline-primary" href="{{ next_url }}">Next</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

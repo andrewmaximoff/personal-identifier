@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Registration | Identifier{% endblock %}
+
+{% block css_link  %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/registration.css') }}">
+{% endblock %}
+
+{% block content %}
+  {% include 'header.html' %}
+  <div class="container">
+    <div class="container">
+      <h1>Family profile</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-8">
+        <div class="row">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Full name</th>
+                <th scope="col">Last visit</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in users %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ user.full_name }}</td>
+                  {% if user.last_visit %}
+                    <td>{{ moment(user.last_visit.visit_date).format('MMMM Do, h:mm:ss a') }}</td>
+                  {% else %}
+                    <td>None</td>
+                  {% endif %}
+                  <td>
+                    <a class="btn btn-primary" href="{{ url_for('profile.user_profile', user_id=user.id) }}">View</a>
+                  </td>
+                  <td>
+                    {% if current_user.admin and current_user.id != user.id %}
+                      <a class="btn btn-danger" href="{{ url_for('profile.delete_user', user_id=user.id) }}">Delete</a>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="row">
+          {% if prev_url %}
+            <a href="{{ prev_url }}">Last</a>
+          {% endif %}
+          {% if next_url %}
+            <a href="{{ next_url }}">Next</a>
+          {% endif %}
+        </div>
+        {% if current_user.admin %}
+          <div class="row">
+            <a class="btn btn-primary" href="{{ url_for('profile.user_add') }}">Add new member</a>
+          </div>
+        {% endif %}
+
+      </div>
+      <div class="col-4">
+        <form method="post" enctype="multipart/form-data">
+          {{ form.csrf_token }}
+          <div class="form-group">
+            <label>Family picture</label>
+          </div>
+          <div class="form-group">
+            {% if family_picture %}
+              <img id='img-upload' src="{{ family_picture }}"/>
+            {% else %}
+              <img id='img-upload' src="{{ url_for('static', filename='img/family_defult.jpg') }}"/>
+            {% endif %}
+            <div class="input-group">
+              <span class="input-group-btn">
+                <span class="btn btn-light btn-file">
+                  Browse...{{ form.family_picture(class="family_picture", id="family_picture") }}
+                </span>
+              </span>
+              <input type="text" class="form-control" readonly>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="footer">
+              <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block javascript %}
+  <script>
+    $(document).ready( function() {
+        $(document).on('change', '.btn-file :file', function() {
+      var input = $(this),
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+      input.trigger('fileselect', [label]);
+      });
+
+      $('.btn-file :file').on('fileselect', function(event, label) {
+
+          var input = $(this).parents('.input-group').find(':text'),
+              log = label;
+
+          if( input.length ) {
+              input.val(log);
+          } else {
+              if( log ) alert(log);
+          }
+
+      });
+      function readURL(input) {
+          if (input.files && input.files[0]) {
+              var reader = new FileReader();
+
+              reader.onload = function (e) {
+                  $('#img-upload').attr('src', e.target.result);
+              }
+
+              reader.readAsDataURL(input.files[0]);
+          }
+      }
+
+      $("#family_picture").change(function(){
+          readURL(this);
+      });
+    });
+  </script>
+{% endblock %}

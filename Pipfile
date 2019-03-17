@@ -1,0 +1,24 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+flask = "*"
+flask-restful = "*"
+flask-sqlalchemy = "*"
+flask-login = "*"
+flask-wtf = "*"
+flask-moment = "*"
+flask-migrate = "*"
+python-dotenv = "*"
+gunicorn = "*"
+pillow = "*"
+psycopg2-binary = "*"
+flask-shell-ipython = "*"
+dropbox = "*"
+
+[requires]
+python_version = "3.6"

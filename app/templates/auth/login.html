@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Login | Identifier{% endblock %}
+
+{% block content %}
+<div class="container">
+   <div class="container"><h1>Login</h1></div>
+    <form method="post">
+      {{ form.csrf_token }}
+
+      <div class="form-group">
+        {% if form.name.errors %}
+          {{ form.name(class="form-control is-invalid", placeholder="Name") }}
+        {% else %}
+          {{ form.name(class="form-control", placeholder="Name") }}
+        {% endif %}
+        <div class="invalid-feedback">
+          <ul>
+            {% for error in form.name.errors %}
+              <li>
+                {{ error }}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <div class="form-group">
+        {% if form.password.errors %}
+          {{ form.password(class="form-control is-invalid", placeholder="Password") }}
+        {% else %}
+          {{ form.password(class="form-control", placeholder="Password") }}
+        {% endif %}
+        <div class="invalid-feedback">
+          <ul>
+            {% for error in form.password.errors %}
+              <li>
+                {{ error }}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      {% if error_log %}
+        <div class="form-group">
+        <ul>
+          <li>{{ error_log }}</li>
+        </ul>
+        </div>
+      {% endif %}
+
+      <div class="form-group">
+        <div class="form-check">
+          {{ form.remember_me(class="form-check-input", id="rememberCheck") }}
+          <label class="form-check-label" for="rememberCheck">
+            Remember me
+          </label>
+        </div>
+      </div>
+
+
+      <div class="footer">
+        <button type="submit" class="btn btn-primary">Sign me up</button>
+        <a href="{{ url_for('auth.registration') }}" class="text-center">Register a new membership</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

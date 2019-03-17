@@ -1,0 +1,37 @@
+
+{% extends "base.html" %}
+{% block title %}Delete member | Identifier{% endblock %}
+
+{% block css_link  %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/registration.css') }}">
+{% endblock %}
+
+{% block content %}
+  {% include 'header.html' %}
+  <div class="container">
+    <form method="post">
+      {{ form.csrf_token }}
+      <div class="col-md-6">
+        <div class="form-group">
+          <p>Enter username <b>{{ user.name }}</b></p>
+          {% if form.name.errors %}
+            {{ form.name(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              <ul>
+                <li>
+                  <p>Invalid username</p>
+                </li>
+              </ul>
+            </div>
+          {% else %}
+            {{ form.name(class="form-control") }}
+          {% endif %}
+
+        </div>
+        <div class='form-group'>
+          {{ form.submit(class="btn btn-danger") }}
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

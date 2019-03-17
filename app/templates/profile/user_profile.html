@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Registration | Identifier{% endblock %}
+
+{% block css_link  %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/registration.css') }}">
+{% endblock %}
+
+{% block content %}
+  {% include 'header.html' %}
+  <div class="container">
+    <div class="container">
+      <h1>User profile</h1>
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          {% if user.get_picture_url %}
+            <img id='img-upload' src="{{ user.get_picture_url }}"/>
+          {% else %}
+            <img id='img-upload' src="{{ url_for('static', filename='img/user_defult.png') }}"/>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="col-8">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">{{ user.name }}</h3>
+            <p class="card-text">First name: {{ user.first_name }}</p>
+            <p class="card-text">Last name: {{ user.last_name }}</p>
+          </div>
+          <div class="card-footer">
+            {% if user.last_visit.visit_date %}
+              <p class="card-text">Last visit: {{ moment(user.last_visit.visit_date).format('MMMM Do, h:mm:ss a') }}</p>
+              <img src="{{ user.last_visit.get_picture_url }}" alt="">
+              <div>
+                <hr>
+                <h1 class="">Visit list</h1>
+                <div class="row">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Full name</th>
+                        <th scope="col">Visiting time</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for visit in visits %}
+                        <tr>
+                          <td>{{ visit.user.full_name }}</td>
+                          <td>{{ moment(visit.visit_date).format('MMMM Do, h:mm:ss a') }}</td>
+                          <td>
+                            <a class="btn btn-primary" href="{{ url_for('profile.visit_profile', visit_id=visit.id) }}">View</a>
+                          </td>
+                        </tr>
+                      {% else %}
+                        <td colspan="3">None</td>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                <div class="row justify-content-between">
+                  <div class="col-4">
+                    {% if prev_url %}
+                      <a class="btn btn-outline-primary" href="{{ prev_url }}">Prev</a>
+                    {% endif %}
+                  </div>
+                  <div class="col-4 text-right">
+                    {% if next_url %}
+                      <a class="btn btn-outline-primary" href="{{ next_url }}">Next</a>
+                    {% endif %}
+                  </div>
+                </div>
+
+              </div>
+            {% else %}
+              <p class="card-text">Last visit: None</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

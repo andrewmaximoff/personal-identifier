@@ -1,10 +1,10 @@
 import datetime
+import os
 
 import requests
-import telegram
 
-URL = 'http://127.0.0.1:8000/api/visit/registration/'
-FAMILY_ID = '568f62ad-dd8a-4bde-b290-d7fcf9aece03'
+URL = os.getenv('URL')
+FAMILY_ID = os.getenv('FAMILY_ID')
 
 
 def check_visits(visit_list: dict, names: list):

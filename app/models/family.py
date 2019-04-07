@@ -1,10 +1,7 @@
 import uuid
 from typing import Optional
 
-from datetime import datetime
-
-from sqlalchemy.dialects.postgresql import UUID, TEXT
-from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID
 
 from app import db, dbx
 

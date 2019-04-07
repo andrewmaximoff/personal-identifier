@@ -1,0 +1,6 @@
+.alert-top {
+    position: fixed!important;
+    top: 10px!important;
+    right: 30%!important;
+    left: 30%!important;
+}

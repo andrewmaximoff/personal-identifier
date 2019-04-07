@@ -1,10 +1,11 @@
 import dropbox
 
-from flask import Flask, redirect, url_for, render_template
+from flask import Flask, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_moment import Moment
+from flask_socketio import SocketIO
 
 from config import Config
 from app.utils.http_errors import page_not_found, forbidden
@@ -13,6 +14,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 moment = Moment()
+socketio = SocketIO()
 dbx = dropbox.Dropbox(Config.DROPBOX_TOKEN)
 
 
@@ -27,7 +29,9 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     login.init_app(app)
+    login.login_view = "auth.login"
     moment.init_app(app)
+    socketio.init_app(app)
 
     app.register_error_handler(404, page_not_found)
     app.register_error_handler(403, forbidden)
@@ -45,11 +49,6 @@ def create_app(config_class=Config):
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
     return app
-
-
-@login.unauthorized_handler
-def unauthorized():
-    return redirect(url_for('auth.login'))
 
 
 from app import models

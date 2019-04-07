@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Registration | Identifier{% endblock %}
+{% block title %}Family | Identifier{% endblock %}
 
 {% block css_link  %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/registration.css') }}">
@@ -7,6 +7,17 @@
 
 {% block content %}
   {% include 'header.html' %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="animated fadeOut slower">
+          <div class="alert-top alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
   <div class="container">
     <div class="container">
       <h1>Family profile</h1>

@@ -19,6 +19,8 @@ pillow = "*"
 psycopg2-binary = "*"
 flask-shell-ipython = "*"
 dropbox = "*"
+flask-socketio = "*"
+uwsgi = "*"
 
 [requires]
 python_version = "3.6"

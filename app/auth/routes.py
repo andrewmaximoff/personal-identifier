@@ -1,10 +1,11 @@
-from flask import redirect, url_for, render_template, flash, request
+from flask import redirect, url_for, render_template, flash, request, abort
 from flask_login import current_user, login_user, logout_user, login_required
 
 from app import db
 from app.auth.forms import LoginForm, RegistrationForm
 from app.models import User
 from app.utils.dropbox_helpers import upload_user_picture
+from app.utils.url_helpers import is_safe_url
 
 from . import bp
 
@@ -30,8 +31,13 @@ def login():
             return render_template('auth/login.html', form=form, error_log='Invalid login or password')
 
         login_user(user, remember=form.remember_me.data)
-        flash('Logged in successfully.')
-        return redirect(url_for('home.index'))
+        flash('Logged in successfully.', 'success')
+
+        next_url = request.args.get('next')
+        if not is_safe_url(next_url):
+            return abort(400)
+
+        return redirect(next_url or url_for('home.index'))
 
     return render_template('auth/login.html', form=form)
 
@@ -57,7 +63,7 @@ def registration():
         db.session.commit()
         if file:
             upload_user_picture(file, user)
-        flash('Thanks for registering!')
+        flash('Thanks for registering!', 'success')
         return redirect(url_for('auth.login'))
     return render_template('auth/registration.html', form=form, admin=True)
 

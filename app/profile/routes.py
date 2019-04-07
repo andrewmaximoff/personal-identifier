@@ -24,7 +24,7 @@ from app.utils.dropbox_helpers import (
 )
 
 
-@bp.route('/user', methods=['GET', 'POST'])
+@bp.route('/me', methods=['GET', 'POST'])
 @login_required
 def update_user_profile():
     form = UserProfileUpdateForm(obj=current_user)
@@ -97,7 +97,7 @@ def user_add():
         if file:
             upload_user_picture(file, new_user)
         db.session.commit()
-        flash('Member has been created!')
+        flash('Member has been created!', 'primary')
         return redirect(url_for('profile.family'))
     return render_template('profile/add_new_member.html', form=form)
 
@@ -108,7 +108,7 @@ def user_profile(user_id):
     user = User.query.get_or_404(str(user_id))
 
     page = request.args.get('page', 1, type=int)
-    visits = user.visits.order_by(Visit.visit_date.asc()).paginate(
+    visits = user.visits.order_by(Visit.visit_date.desc()).paginate(
         page, current_app.config['USER_PER_PAGE'], False)
 
     next_url = url_for('profile.user_profile', user_id=user_id, page=visits.next_num) \
@@ -147,6 +147,7 @@ def visit_list():
         if visits.has_prev else None
 
     return render_template('profile/visit_list.html',
+                           page=page,
                            visits=visits.items,
                            next_url=next_url,
                            prev_url=prev_url)
@@ -171,6 +172,34 @@ def delete_user(user_id):
         if user.name == form.name.data:
             db.session.delete(user)
             db.session.commit()
+            flash('User has been deleted!', 'primary')
             return redirect(url_for('profile.family'))
         return render_template('profile/delete_user.html', form=form, user=user, error=True)
     return render_template('profile/delete_user.html', form=form, user=user)
+
+
+@bp.route('/user/unknown', methods=['GET'])
+@login_required
+def unknown_profile():
+    current_family = current_user.family
+
+    page = request.args.get('page', 1, type=int)
+    visits = Visit.query.filter_by(user_id=None, family=current_family).\
+        order_by(Visit.visit_date.desc()).\
+        paginate(page, current_app.config['USER_PER_PAGE'], False)
+
+    next_url = url_for('profile.unknown_profile', page=visits.next_num) \
+        if visits.has_next else None
+    prev_url = url_for('profile.unknown_profile', page=visits.prev_num) \
+        if visits.has_prev else None
+
+    last_visit = Visit.query.filter_by(user_id=None, family=current_family).\
+        order_by(Visit.visit_date.desc()).first()
+
+    return render_template(
+        'profile/unknown_profile.html',
+        last_visit=last_visit,
+        visits=visits.items,
+        next_url=next_url,
+        prev_url=prev_url
+    )

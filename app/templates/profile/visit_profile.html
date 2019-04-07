@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Registration | Identifier{% endblock %}
+{% block title %} Visit | Identifier{% endblock %}
 
 {% block css_link  %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/registration.css') }}">
@@ -21,8 +21,11 @@
       <div class="col-8">
         <div class="card">
           <div class="card-body">
-            <h3 class="card-title">{{ visit.name }}</h3>
-            <p class="card-text">Who: <a href="{{ url_for('profile.user_profile', user_id=visit.user_id) }}">{{ visit.user.full_name }}</a></p>
+            {% if visit.is_unknown %}
+              <h3 class="card-title">Who: <a href="{{ url_for('profile.user_profile', user_id=visit.user_id) }}">{{ visit.user.full_name }}</a></h3>
+            {% else %}
+              <h3 class="card-title">Who: <a href="{{ url_for('profile.unknown_profile') }}">Unknown</a></h3>
+            {% endif %}
           </div>
           <div class="card-footer">
             <p class="card-text">Visiting time: {{ moment(visit.visit_date).format('MMMM Do, h:mm:ss a') }}</p>

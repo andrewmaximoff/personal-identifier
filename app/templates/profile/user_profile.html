@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Registration | Identifier{% endblock %}
+{% block title %}{{ user.full_name }} | Identifier{% endblock %}
 
 {% block css_link  %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/registration.css') }}">
@@ -26,8 +26,7 @@
         <div class="card">
           <div class="card-body">
             <h3 class="card-title">{{ user.name }}</h3>
-            <p class="card-text">First name: {{ user.first_name }}</p>
-            <p class="card-text">Last name: {{ user.last_name }}</p>
+            <p class="card-text">Full name: {{ user.full_name }}</p>
           </div>
           <div class="card-footer">
             {% if user.last_visit.visit_date %}
@@ -35,7 +34,7 @@
               <img src="{{ user.last_visit.get_picture_url }}" alt="">
               <div>
                 <hr>
-                <h1 class="">Visit list</h1>
+                <h1 id="visitList" class="">Visit list</h1>
                 <div class="row">
                   <table class="table">
                     <thead>
@@ -63,12 +62,12 @@
                 <div class="row justify-content-between">
                   <div class="col-4">
                     {% if prev_url %}
-                      <a class="btn btn-outline-primary" href="{{ prev_url }}">Prev</a>
+                      <a class="btn btn-outline-primary" href="{{ prev_url }}#visitList">Prev</a>
                     {% endif %}
                   </div>
                   <div class="col-4 text-right">
                     {% if next_url %}
-                      <a class="btn btn-outline-primary" href="{{ next_url }}">Next</a>
+                      <a class="btn btn-outline-primary" href="{{ next_url }}#visitList">Next</a>
                     {% endif %}
                   </div>
                 </div>

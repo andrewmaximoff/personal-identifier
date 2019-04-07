@@ -1,7 +1,14 @@
 import datetime
 import os
 
+from pathlib import Path
+
 import requests
+
+from dotenv import load_dotenv
+
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 URL = os.getenv('URL')
 FAMILY_ID = os.getenv('FAMILY_ID')
